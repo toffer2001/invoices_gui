@@ -16,6 +16,7 @@ namespace Invoices_GUI
         private long n1 = 0; // first fibonacci number
         private long n2 = 1; // second fibonacci number
         private long temp = 0;
+        string resultText = "";
 
         public Form1()
         {
@@ -199,31 +200,38 @@ namespace Invoices_GUI
 
             richTextBoxRight.Text += ($"Invoices\n");
 
-            // calling asynchronous fibonacci method to show won't delay other requests
-            calculateRecursiveBtn_Click();
+            resultText = richTextBoxRight.Text;
 
             foreach (var invoice in invoiceList)
             {
                 //richTextBoxRight.Text += ($"\nKey {invoice.Key}");
                 var customer = invoice.Last();
 
-                    richTextBoxRight.Text += ($"\nInvoice {customer.ID}");
-                    richTextBoxRight.Text += ($"\nCustomer {customer.CustomerID}  {customer.FirstName} {customer.LastName} \t\t Date {customer.date}");
+                //richTextBoxRight.Text += ($"\nInvoice {customer.ID}");
+                //richTextBoxRight.Text += ($"\nCustomer {customer.CustomerID}  {customer.FirstName} {customer.LastName} \t\t Date {customer.date}");
+                resultText += ($"\nInvoice {customer.ID}");
+                resultText += ($"\nCustomer {customer.CustomerID}  {customer.FirstName} {customer.LastName} \t\t Date {customer.date}");
 
-                    foreach (var item in invoice)
+                foreach (var item in invoice)
                     {
-                        richTextBoxRight.Text += ($"\n{lineItemRowNumber} {item.ItemName}           \t@ {item.Cost:C} \t qty sold {item.QtySold} \t cost {item.itemCost:C}");
+                        //richTextBoxRight.Text += ($"\n{lineItemRowNumber} {item.ItemName}           \t@ {item.Cost:C} \t qty sold {item.QtySold} \t cost {item.itemCost:C}");
+                        resultText += ($"\n{lineItemRowNumber} {item.ItemName}");
                         customerTotal += item.itemCost;
                         lineItemRowNumber++;
                     }
 
-                    richTextBoxRight.Text += ($"\nTotal for invoice: {customerTotal:C}\n");
+                    //richTextBoxRight.Text += ($"\nTotal for invoice: {customerTotal:C}\n");
+                    resultText += ($"\nTotal for invoice: {customerTotal:C}\n");
                     grandTotal += customerTotal;
                     customerTotal = 0; // reset customer total to 0
                     lineItemRowNumber = 1; // reset row to 1
                 
             }
-            richTextBoxRight.Text += ($"\nGRAND TOTAL for ALL invoices: {grandTotal:C}\n");
+            //richTextBoxRight.Text += ($"\nGRAND TOTAL for ALL invoices: {grandTotal:C}\n");
+            resultText += ($"\nGRAND TOTAL for ALL invoices: {grandTotal:C}\n");
+
+            // calling asynchronous fibonacci method to show won't delay other requests
+            calculateRecursiveBtn_Click(resultText);
 
             /*
             foreach (var thisOne in invoiceList)
@@ -266,24 +274,31 @@ namespace Invoices_GUI
 
             richTextBoxRight.Text += ($"Inventory Changes\n");
 
-            // calling asynchronous fibonacci method to show won't delay other requests
-            calculateRecursiveBtn_Click();
+            resultText = richTextBoxRight.Text;
+
+
 
             foreach (var invItem in invList)
             {
-                richTextBoxRight.Text += ($"\nInventory Item: {invItem.Key}");
+                //richTextBoxRight.Text += ($"\nInventory Item: {invItem.Key}");
+                resultText += ($"\nInventory Item: {invItem.Key}");
 
-                foreach(var invoice in invItem)
+                foreach (var invoice in invItem)
                 {
-                    richTextBoxRight.Text += ($"\n    Invoice {invoice.InvoiceID}   sold {invoice.QtySold}\t cost {invoice.itemCost:C}");
+                    //richTextBoxRight.Text += ($"\n    Invoice {invoice.InvoiceID}   sold {invoice.QtySold}\t cost {invoice.itemCost:C}");
+                    resultText += ($"\n    Invoice {invoice.InvoiceID}   sold {invoice.QtySold}\t cost {invoice.itemCost:C}");
                     invSoldTotal += invoice.itemCost;
                 }
                 invSoldGrandTotal += invSoldTotal;
-                richTextBoxRight.Text += ($"\n    Total sold: {invSoldTotal:C}\n");
+                //richTextBoxRight.Text += ($"\n    Total sold: {invSoldTotal:C}\n");
+                resultText += ($"\n    Total sold: {invSoldTotal:C}\n");
                 invSoldTotal = 0; // reset to 0
             }
-            richTextBoxRight.Text += ($"\nGRAND TOTAL SOLD: {invSoldGrandTotal:C}");
-            
+            //richTextBoxRight.Text += ($"\nGRAND TOTAL SOLD: {invSoldGrandTotal:C}");
+            resultText += ($"\nGRAND TOTAL SOLD: {invSoldGrandTotal:C}");
+
+            // calling asynchronous fibonacci method to show won't delay other requests
+            calculateRecursiveBtn_Click(resultText);
         }
 
         // Invoices by Customer
@@ -310,12 +325,14 @@ namespace Invoices_GUI
 
             richTextBoxRight.Text += ($"Invoices Sorted by Customer\n");
 
-            // calling asynchronous fibonacci method to show won't delay other requests
-            calculateRecursiveBtn_Click();
+
+
+            resultText = richTextBoxRight.Text;
 
             foreach (var cust in custList)
             {
-                richTextBoxRight.Text += ($"\nCustomer {cust.Key}");
+                //richTextBoxRight.Text += ($"\nCustomer {cust.Key}");
+                resultText += ($"\nCustomer {cust.Key}");
 
                 int invoiceID = 0;
                 
@@ -325,16 +342,21 @@ namespace Invoices_GUI
                    invoiceTotal += invoice.itemCost;
                 }
 
-                richTextBoxRight.Text += ($"\n    Invoice {invoiceID}  Total {invoiceTotal:C}\n");
+                //richTextBoxRight.Text += ($"\n    Invoice {invoiceID}  Total {invoiceTotal:C}\n");
+                resultText += ($"\n    Invoice {invoiceID}  Total {invoiceTotal:C}\n");
+
                 grandTotal += invoiceTotal;
                 invoiceTotal = 0; // reset invoice total to 0
             }
-            richTextBoxRight.Text += ($"\nTotal \t {grandTotal:C}\n");
+            //richTextBoxRight.Text += ($"\nTotal \t {grandTotal:C}\n");
+            resultText += ($"\nTotal \t {grandTotal:C}\n");
 
+            // calling asynchronous fibonacci method to show won't delay other requests
+            calculateRecursiveBtn_Click(resultText);
         }
 
         // asynchronous fibonacci method with hardcoded 40th number
-        private async void calculateRecursiveBtn_Click()
+        private async void calculateRecursiveBtn_Click(string text)
         {
             long userNumber = 40; //long.Parse(fibInputNumbers.Text);
             long result = 0;
@@ -344,7 +366,6 @@ namespace Invoices_GUI
             // calculate duration of time to complete method
             startTime = DateTime.Now;
 
-            //richTextBoxRight.Text += ($"\nCalculating\n");
             //recursiveResultBox.Text = "Calculating...";
 
             // syncronous flow
@@ -352,7 +373,9 @@ namespace Invoices_GUI
 
             // async improvement
             Task<long> calculateTask = Task.Run(() => Fibonacci(userNumber));
+            richTextBoxRight.Text += ($"\nCalculating\n");
             await calculateTask;
+            richTextBoxRight.Text = ($"{text}");
 
             result = calculateTask.Result;
 
